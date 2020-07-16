@@ -14,14 +14,12 @@ function App({
   updateSong,
   favouritePlaylist,
   listenedPlaylist,
+  error,
+  status,
 }) {
   useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await axios.get("http://localhost:3000/playlist");
-      initPlaylist(data);
-    };
-    fetchData();
-  }, [initPlaylist]);
+    initPlaylist();
+  }, []);
 
   return (
     <div className="App">
@@ -52,14 +50,16 @@ function App({
   );
 }
 
-const mapStateToProps = ({ playlist }) => ({
+const mapStateToProps = ({ playlist, status, error }) => ({
   playlist,
   favouritePlaylist: favouriteSelector(playlist),
   listenedPlaylist: listenedSelector(playlist),
+  status,
+  error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  initPlaylist: (data) => dispatch(initPlaylist(data)),
+  initPlaylist: () => initPlaylist()(dispatch),
   updateSong: (id, key, value) => dispatch(updateSong(id, key, value)),
 });
 
