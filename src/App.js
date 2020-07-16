@@ -5,42 +5,46 @@ import { connect } from "react-redux";
 
 import PlayList from "./Playlist";
 import "./App.css";
-import { initPlaylist, addFav, removeFav } from "./action";
+import { initPlaylist, updateSong } from "./action";
+import { favouriteSelector, listenedSelector } from "./selector";
 
-function App({ playlist, initPlaylist, addFav, removeFav }) {
+function App({
+  playlist,
+  initPlaylist,
+  updateSong,
+  favouritePlaylist,
+  listenedPlaylist,
+}) {
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get("http://localhost:3000/playlist");
       initPlaylist(data);
     };
     fetchData();
-  }, []);
+  }, [initPlaylist]);
 
   return (
     <div className="App">
       <Grid container spacing={10}>
-        <Grid item xs={8} md={4} lg={3}>
+        <Grid item xs={12} md={4}>
           <PlayList
             listName="Favorite"
-            playlist={playlist}
-            addFav={addFav}
-            removeFav={removeFav}
+            playlist={favouritePlaylist}
+            updateSong={updateSong}
           />
         </Grid>
-        <Grid item xs={8} md={4} lg={3}>
+        <Grid item xs={12} md={4}>
           <PlayList
             listName="Listened"
-            playlist={playlist}
-            addFav={addFav}
-            removeFav={removeFav}
+            playlist={listenedPlaylist}
+            updateSong={updateSong}
           />
         </Grid>
-        <Grid item xs={8} md={4} lg={3}>
+        <Grid item xs={12} md={4}>
           <PlayList
             listName="Playlist"
             playlist={playlist}
-            addFav={addFav}
-            removeFav={removeFav}
+            updateSong={updateSong}
           />
         </Grid>
       </Grid>
@@ -50,12 +54,13 @@ function App({ playlist, initPlaylist, addFav, removeFav }) {
 
 const mapStateToProps = ({ playlist }) => ({
   playlist,
+  favouritePlaylist: favouriteSelector(playlist),
+  listenedPlaylist: listenedSelector(playlist),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   initPlaylist: (data) => dispatch(initPlaylist(data)),
-  addFav: (id) => dispatch(addFav(id)),
-  removeFav: (id) => dispatch(removeFav(id)),
+  updateSong: (id, key, value) => dispatch(updateSong(id, key, value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

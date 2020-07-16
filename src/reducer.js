@@ -1,4 +1,4 @@
-import { INIT_PLAYLIST, ADD_FAV, REMOVE_FAV } from "./action";
+import { INIT_PLAYLIST, UPDATE_SONG } from "./action";
 
 const initialState = {
   playlist: [],
@@ -11,25 +11,14 @@ const playlist = (state = initialState, action) => {
       return {
         playlist: action.payload,
       };
-    case ADD_FAV:
+    case UPDATE_SONG:
+      const { id, key, value } = action.payload;
       return {
         playlist: playlist.map((song) => {
-          if (song.id === action.id)
+          if (song.id === id)
             return {
               ...song,
-              favourite: true,
-            };
-
-          return song;
-        }),
-      };
-    case REMOVE_FAV:
-      return {
-        playlist: playlist.map((song) => {
-          if (song.id === action.id)
-            return {
-              ...song,
-              favourite: false,
+              [key]: value,
             };
 
           return song;
